@@ -1,0 +1,26 @@
+{
+    "apps" : [{
+        "name": "book",
+        "script": "./server/app.js",
+        "env": {
+            "COMMON_VARIABLE": "true"
+        },
+        "env_production" : {
+            "NODE_ENV": "production"
+        }
+    }],
+    "deploy": {
+        "production" : {
+            "user": "imooc_manager",
+            "host": ["39.107.120.14"],
+            "ref": "origin/master",
+            "repo": "git@gitee.com:yangbin1993/book_server.git",
+            "path": "/www/book/production",
+            "post-deploy": "npm install && npm run build && pm2 startOrRestart ecosystem.json --env production",
+            "ssh_options": "StrictHostKeyChecking=no",
+            "env" : {
+                "NODE_ENV": "production"
+            }
+        }
+    }
+}
