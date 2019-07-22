@@ -81,7 +81,7 @@ export default {
             this.showCode = false;
         },
         deleteCode(row) {
-            console.log(row);
+            console.log('.....', row);
         }
     }
 };
