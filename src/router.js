@@ -1,18 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/login'
-import Books from '@/views/books'
-import Users from '@/views/users'
-import Records from '@/views/records'
-import Wishes from '@/views/wishes'
+import List from '@/views/list'
+import Detail from '@/views/detail'
+import Record from '@/views/record'
 
 Vue.use(Router)
 
 export default new Router({
     routes: [
         {
-            path: '/',
-            redirect: 'books'
+            path: '*',
+            redirect: 'list'
         },
         {
             path: '/login',
@@ -20,24 +19,19 @@ export default new Router({
             component: Login
         },
         {
-            path: '/books',
-            name: 'Books',
-            component: Books
+            path: '/list',
+            name: 'List',
+            component: List
         },
         {
-            path: '/users',
-            name: 'Users',
-            component: Users
+            path: '/detail',
+            name: 'Detail',
+            component: Detail
         },
         {
-            path: '/records',
-            name: 'Records',
-            component: Records
-        },
-        {
-            path: '/wishes',
-            name: 'Wishes',
-            component: Wishes
+            path: '/record',
+            name: 'Record',
+            component: Record
         }
     ]
 })

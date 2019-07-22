@@ -23,12 +23,12 @@
                 label="溯源码结束值">
             </el-table-column>
             <el-table-column
-                width="50px">
+                width="100px">
                 <template slot-scope="scope">
                     <el-button
                         type="text"
                         size="small"
-                        @click="deleteCode(scope.row)">删除</el-button>
+                        @click="download(scope.row)">下载溯源码</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -80,7 +80,7 @@ export default {
         closeCode() {
             this.showCode = false;
         },
-        deleteCode(row) {
+        download(row) {
             console.log('.....', row);
         }
     }

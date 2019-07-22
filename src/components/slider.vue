@@ -4,14 +4,12 @@
             class="el-menu-vertical-demo"
             mode="vertical"
             :router=true>
-            <el-menu-item index="books"
-                class="tc">图书管理</el-menu-item>
-            <el-menu-item index="users"
-                class="tc">用户管理</el-menu-item>
-            <el-menu-item index="records"
-                class="tc">借阅记录</el-menu-item>
-            <el-menu-item index="wishes"
-                class="tc">愿望清单</el-menu-item>
+            <el-menu-item index="list"
+                class="tc">商品列表</el-menu-item>
+            <el-menu-item index="detail"
+                class="tc">商品详情</el-menu-item>
+            <el-menu-item index="record"
+                class="tc">操作记录</el-menu-item>
         </el-menu>
     </div>
 </template>
@@ -20,12 +18,11 @@ export default {
     name: 'slider',
     data() {
         return {
-            activeIndex: 'books',
+            activeIndex: 'list',
             pathMap: {
-                Books: 'books',
-                Users: 'users',
-                Records: 'records',
-                Wishes: 'wishes'
+                List: 'list',
+                Detail: 'detail',
+                Record: 'record'
             }
         }
     },
