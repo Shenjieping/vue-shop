@@ -5,6 +5,9 @@
             class="login">
             <router-view></router-view>
         </div>
+        <div class="mobile-phone" v-else-if="isMobile">
+            <router-view></router-view>
+        </div>
         <el-container v-else>
             <el-header>
                 <book-nav></book-nav>
@@ -34,6 +37,10 @@ export default {
     computed: {
         isLogin() {
             return new RegExp(this.$route.path).test('/login')
+        },
+        isMobile() {
+            console.log(this.$route.path)
+            return new RegExp('/mobile').test(this.$route.path)
         }
     }
 }
@@ -42,6 +49,7 @@ export default {
 @import "./assets/css/variable.scss";
 html,
 body,
+.pc,
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -55,6 +63,10 @@ body,
   height: 100%;
   background: url("./assets/image/bg.jpg") no-repeat center;
   background-size: cover;
+}
+.mobile-phone {
+    overflow: auto;
+    height: 100%;
 }
 .el-container {
   height: 100%;

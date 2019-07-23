@@ -4,8 +4,10 @@
             <ul class="shop-list pull-left">
                 <li
                     class="item"
+                    :class="{'active': active === key}"
                     v-for="(item, key) in shopList"
-                    :key="key">
+                    :key="key"
+                    @click="clickItem(item, key)">
                     {{item.name}}
                 </li>
             </ul>
@@ -37,12 +39,19 @@ export default {
                 name: '香蕉'
             }, {
                 name: '苹果22222'
-            }]
+            }],
+            active: 0
         }
     },
     components: {
         Enterprise,
         Origin
+    },
+    methods: {
+        clickItem(item, key) {
+            console.log('....', item)
+            this.active = key
+        }
     }
 }
 </script>
@@ -61,6 +70,9 @@ export default {
             cursor: pointer;
             padding: 0 10px;
             &:hover {
+                color: #409EFF;
+            }
+            &.active {
                 color: #409EFF;
             }
         }
