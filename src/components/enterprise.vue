@@ -15,23 +15,23 @@
 </template>
 
 <script>
-import Editor from '@/components/editor';
+import Editor from '@/components/editor'
 export default {
     name: 'enterprise',
     data() {
         return {
             showAdd: false
-        };
+        }
     },
     components: {
         Editor
     },
     methods: {
         closeAdd() {
-            this.showAdd = false;
+            this.showAdd = false
         }
     }
-};
+}
 </script>
 
 <style lang="scss" scoped>

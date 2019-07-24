@@ -39,7 +39,6 @@ export default {
             return new RegExp(this.$route.path).test('/login')
         },
         isMobile() {
-            console.log(this.$route.path)
             return new RegExp('/mobile').test(this.$route.path)
         }
     }

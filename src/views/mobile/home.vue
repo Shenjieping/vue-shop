@@ -2,30 +2,17 @@
     <div :class="$options.name">
         <div class="header">
             <div class="title">上海智辉农业专业合作社产品追溯系统</div>
-            <div class="title-bus">首次查询，欢迎您购买松江牌大米</div>
+            <div class="title-bus" v-if="count === 0">首次查询，欢迎您购买松江牌大米</div>
+            <div class="title-bus" v-else>该产品已被查询<i>{{count}}</i>次</div>
         </div>
         <div class="list">
             <div class="total">溯源总揽</div>
             <ul>
-                <li>
-                    <span class="title">产品名称：</span>
-                    <span class="content">1111</span>
-                </li>
-                <li>
-                    <span class="title">品种：</span>
-                    <span class="content">2222</span>
-                </li>
-                <li>
-                    <span class="title">注册商标：</span>
-                    <span class="content">333</span>
-                </li>
-                <li>
-                    <span class="title">生成单位：</span>
-                    <span class="content"></span>
-                </li>
-                <li>
-                    <span class="title">销售单位：</span>
-                    <span class="content"></span>
+                <li
+                    v-for="(item, key) in listItem"
+                    :key="key">
+                    <span class="title">{{item.name1}}：</span>
+                    <span class="content">{{item.name2}}</span>
                 </li>
             </ul>
             <div
@@ -45,6 +32,29 @@ export default {
     name: 'mobile-home',
     data() {
         return {
+            count: 1,
+            listItem: [
+                {
+                    name1: '产品名称',
+                    name2: '测试2222'
+                },
+                {
+                    name1: '产品名称',
+                    name2: '测试2222'
+                },
+                {
+                    name1: '产品名称',
+                    name2: '测试2222'
+                },
+                {
+                    name1: '产品名称',
+                    name2: '测试2222'
+                },
+                {
+                    name1: '产品名称',
+                    name2: '测试2222'
+                }
+            ]
         }
     },
     methods: {
@@ -75,6 +85,10 @@ export default {
                 position: absolute;
                 width: 100%;
                 bottom: 20px;
+                i {
+                    color: #f66;
+                    font-style: normal;
+                }
             }
         }
     }
