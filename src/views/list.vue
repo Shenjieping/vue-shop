@@ -9,7 +9,7 @@
                 @click="showAddModal">添加商品</el-button>
         </div>
         <div class="content">
-            <el-table :data="userList"
+            <el-table :data="goodsList"
                 stripe
                 style="width: 100%"
                 v-loading="loading"
@@ -22,25 +22,26 @@
                         {{scope.$index + 1}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="id"
+                <!-- <el-table-column prop="_id"
                     label="商品id">
-                </el-table-column>
-                <el-table-column prop="name"
+                </el-table-column> -->
+                <el-table-column prop="goodsName"
                     label="商品名称">
                 </el-table-column>
-                <el-table-column prop="desc"
+                <!-- <el-table-column prop="desc"
                     label="商品描述">
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
-                    prop="desc"
-                    width="100px"
                     label="创建时间">
+                    <template slot-scope="scope">
+                        <span>{{setTime(scope.row.createDate)}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="80"
                     label="操作">
                     <template slot-scope="scope">
                         <el-button type="text"
-                            @click="del(scope.row.name)">删除</el-button>
+                            @click="del(scope.row.goodsName)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -54,13 +55,13 @@
                 ref="userForm">
                 <el-form-item prop="name">
                     <el-input v-model="user.name"
-                        placeholder="请输入用户名"></el-input>
+                        placeholder="请输入商品名称"></el-input>
                 </el-form-item>
-                <el-form-item prop="pwd">
+                <!-- <el-form-item prop="pwd">
                     <el-input v-model="user.pwd"
                         type="password"
                         placeholder="请输入密码"></el-input>
-                </el-form-item>
+                </el-form-item> -->
             </el-form>
             <span slot="footer"
                 class="dialog-footer">
@@ -75,6 +76,7 @@
 <script>
 import { api } from '@/config'
 import { Loading } from '../assets/js/mixins'
+import * as Util from '@/assets/js/utils.js'
 
 export default {
     name: 'users',
@@ -85,11 +87,10 @@ export default {
                 name: '',
                 pwd: ''
             },
-            userList: [],
+            goodsList: [],
             addModal: false,
             rules: {
-                name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-                pwd: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+                name: [{ required: true, message: '请输入商品名', trigger: 'blur' }]
             }
         }
     },
@@ -100,32 +101,31 @@ export default {
         hideAddModal() {
             this.addModal = false
         },
+        setTime(time) {
+            time = Number(time)
+            return Util.dateFormat(time, 'YYYY-MM-DD H:M')
+        },
         getUserList() {
-            this.showLoading()
-            this.http.get(`${api.userApi}/list`)
+            this.http.get(`${api.goods}/goods/list`)
                 .then(res => {
-                    if (res.data.result) {
-                        this.userList = res.data.data
-                    } else {
-                        this.$message.error(res.data.msg)
+                    if (res.data.result && res.data.data) {
+                        this.goodsList = res.data.data
                     }
-                    this.hideLoading()
-                }).catch(err => {
-                    this.hideLoading()
-                    this.$message.error(err)
+                })
+                .catch(err => {
+                    console.error(err)
                 })
         },
         addUser() {
             this.$refs.userForm.validate((valid) => {
                 if (valid) {
-                    this.http.post(`${api.userApi}/add`, {
-                        name: this.user.name,
-                        pwd: this.user.pwd
+                    this.http.post(`${api.goods}/goods/add`, {
+                        goodsName: this.user.name
                     }).then(res => {
                         if (res.data.result) {
                             this.$message.success('添加成功')
-                            this.hideAddModal()
                             this.getUserList()
+                            this.addModal = false
                         } else {
                             this.$message.error(`添加失败:${res.data.msg}`)
                         }
@@ -135,37 +135,33 @@ export default {
                 }
             })
         },
-        del(name) {
-            if (name === 'root') {
-                this.$message.error('不能删除root用户')
-            } else {
-                this.$confirm(`确认删除用户 ${name} 吗？`, '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.http.post(`${api.userApi}/del`, { name })
-                        .then(res => {
-                            if (res.data.result) {
-                                this.$message.success('删除成功')
-                                this.getUserList()
-                            } else {
-                                this.$message.error('删除失败')
-                            }
-                        }).catch((error) => {
-                            this.$message.error(error)
-                        })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消'
+        del(goodsName) {
+            this.$confirm(`确认删除 ${goodsName} 吗？`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.http.post(`${api.goods}/goods/del`, { goodsName })
+                    .then(res => {
+                        if (res.data.result) {
+                            this.$message.success('删除成功')
+                            this.getUserList()
+                        } else {
+                            this.$message.error('删除失败')
+                        }
+                    }).catch((error) => {
+                        this.$message.error(error)
                     })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消'
                 })
-            }
+            })
         }
     },
     created() {
-        // this.getUserList()
+        this.getUserList()
     }
 }
 </script>

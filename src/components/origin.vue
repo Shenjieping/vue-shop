@@ -50,10 +50,10 @@
                 <el-form-item
                     prop="count"
                     label="数量">
-                    <el-input v-model="codeFrom.count" placeholder="请输入数量"></el-input>
+                    <el-input v-model.number="codeFrom.count" placeholder="请输入数量"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="addOrigin">确定</el-button>
+                    <el-button type="primary" @click="addOrigin('codeForm')">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -64,15 +64,6 @@
 export default {
     name: 'origin',
     data() {
-        let checkCount = (rule, value, callback) => {
-            if (!value) {
-                return callback(new Error('年龄不能为空'));
-            } else if (!Number.isInteger(value)) {
-                callback(new Error('请输入数字值'));
-            } else {
-                callback();
-            }
-        }
         return {
             originList: [
                 {
@@ -85,33 +76,33 @@ export default {
                 count: ''
             },
             showCode: false,
-            message: '',
             rules: {
                 count: [
-                    { validator: checkCount, trigger: 'blur' }
+                    {required: true, message: '不能为空'},
+                    {type: 'number', message: '必须为数字值'}
                 ]
             }
-        };
+        }
     },
     methods: {
         closeCode() {
-            this.showCode = false;
+            this.showCode = false
         },
         download(row) {
-            console.log('.....', row);
+            console.log('.....', row)
         },
-        addOrigin() {
-            let {count} = this.codeFrom;
-            if (!/^[0-9]+$/g.test(count)) {
-                this.message = '请输入正确的数字';
-                return;
-            }
-            this.message = '';
-            let originArr = [];
-            // for (let i = 0; i < count; i ++)
+        addOrigin(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    alert('submit!')
+                } else {
+                    console.log('error submit!!')
+                    return false
+                }
+            })
         }
     }
-};
+}
 </script>
 
 <style lang="scss">

@@ -37,3 +37,24 @@ export const formatDate = function (timestamp, format = 'yyyy-mm-dd', type = 'js
         return dateInfo.fullYear + '/' + dateInfo.month + '/' + dateInfo.date
     }
 }
+
+export const dateFormat = function(time = Date.now(), format) {
+    let zeroFill = function (num) {
+      return num < 10 ? '0' + num : num
+    }
+    let formatStr = format || 'YYYY年MM月DD日'
+    // Safari new Date('yyyy-mm-dd hh:mm:ss') => Invalid Date
+    let date = new Date(time)
+    let year = date.getFullYear()
+    let month = zeroFill(date.getMonth() + 1)
+    let day = zeroFill(date.getDate())
+    let hour = zeroFill(date.getHours())
+    let minute = zeroFill(date.getMinutes())
+    let second = zeroFill(date.getSeconds())
+    const formatArr = ['YYYY', 'MM', 'DD', 'H', 'M', 'S']
+    const dateArr = [year, month, day, hour, minute, second]
+    for (let i = 0; i < formatArr.length; i++) {
+      formatStr = formatStr.replace(formatArr[i], dateArr[i])
+    }
+    return formatStr
+}

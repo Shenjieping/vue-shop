@@ -11,11 +11,10 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': {
-        target: 'https://api.douban.com',
+      '/goods': {
+        target: 'http://172.19.32.54:3002/',
         changeOrigin: true,
         pathRewrite: {
-          '^/api': ''
         }
       }
     },
