@@ -1,13 +1,12 @@
 <template>
     <div :class="$options.name">
         <div class="header">
-            <div class="title">上海智辉农业专业合作社产品追溯系统</div>
-            <div class="title-bus" v-if="detailObj.transmit === 0">首次查询，欢迎您购买松江牌大米</div>
-            <div class="title-bus" v-else>该产品已被查询 <i>{{ detailObj.transmit }}</i> 次</div>
+            <div class="title">{{detail.goodsCompany && detail.goodsCompany.name}}</div>
+            <div class="title-bus">{{detail.goodsCompany && detail.goodsCompany.details}}</div>
         </div>
         <div
             class="list"
-            v-for="(info, k) in detailObj.goodsDetails"
+            v-for="(info, k) in detail.goodsDetails"
             :key="k">
             <div class="total">{{info.goodsListName}}</div>
             <ul>
@@ -18,82 +17,31 @@
                     <span class="content">{{item.val}}</span>
                 </li>
             </ul>
-            <div
-                class="show-more"
-                @click="showMore">点击查看更多</div>
         </div>
     </div>
 </template>
 
 <script>
-/**
-* @file home.vue
-* @author shenjp@founder.com
-* @date 2019-07-23 13:41:11
-*/
-import { api } from '@/config'
 export default {
-    name: 'mobile-home',
+    name: 'preview',
     data() {
         return {
-            count: 1,
-            detailObj: {
-                createDate: '',
-                goodsDetails: [],
-                goodsName: '',
-                source: [],
-                transmit: 0
+        }
+    },
+    props: {
+        detail: {
+            type: Object,
+            default() {
+                return {}
             }
-        }
-    },
-    methods: {
-        showMore() {
-            this.$router.push({
-                name: 'MobileDetail'
-            })
-        },
-        getDetail(goodsName, num) {
-            this.http.post(`${api.goods}/goods/detailpadList`, {
-                goodsName,
-                num
-            })
-                .then(res => {
-                    if (res.data && res.data.result) {
-                        let {createDate, goodsDetails, goodsName, source, transmit} = res.data.data[0]
-                        this.detailObj = Object.assign({}, this.detailObj, {
-                            createDate,
-                            goodsDetails,
-                            goodsName,
-                            source,
-                            transmit
-                        })
-                        console.log(this.detailObj, '...')
-                    } else {
-                        this.$message.error(res.data.msg)
-                    }
-                })
-                .catch(err => {
-                    this.$message.error(err)
-                    console.error(err)
-                })
-        }
-    },
-    created() {
-        let {
-            goodsName,
-            num
-        } = this.$route.query
-        if (!goodsName || !num) {
-            this.$message.error('商品名称错误')
-        } else {
-            this.getDetail(goodsName, num)
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.mobile-home {
+.preview {
+    border: 1px solid #ccc;
     .header {
         height: 200px;
         background-color: #0ba69b;
@@ -110,6 +58,7 @@ export default {
                 position: absolute;
                 width: 100%;
                 bottom: 20px;
+                color: #000;
                 i {
                     color: #f00;
                     font-style: normal;

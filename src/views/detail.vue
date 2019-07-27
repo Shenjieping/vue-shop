@@ -12,36 +12,81 @@
                 </li>
             </ul>
             <div class="tabs-box">
-                <el-tabs v-model="activeName" type="border-card">
+                <el-tabs
+                    v-model="activeName"
+                    type="border-card"
+                    :before-leave="checkTab">
                     <el-tab-pane label="企业信息" name="enterprise">
-                        <enterprise></enterprise>
+                        <enterprise
+                            :hasEdit="detail.source.length === 0"
+                            :goods-company="detail.goodsCompany"
+                            @next="nextTab"
+                            ref="enterpriseTemp"></enterprise>
                     </el-tab-pane>
-                    <el-tab-pane label="产品信息" name="product">产品</el-tab-pane>
+                    <el-tab-pane label="产品信息" name="product">
+                        <product-info
+                            :hasEdit="detail.source.length === 0"
+                            :goods-details="detail.goodsDetails"
+                            :goods-name="detail.goodsName"
+                            @success-add-detail="successAdd"
+                            @save-detail="saveDetail"
+                            @preview="preview"></product-info>
+                    </el-tab-pane>
                     <el-tab-pane label="溯源码生成" name="origin">
-                        <origin></origin>
+                        <origin
+                            :source="detail.source"
+                            :goods-name="detail.goodsName"
+                            :goods-details="detail.goodsDetails"
+                            :source-init="detail.sourceOriginInitial"
+                            @success-add-resouce="successAdd"></origin>
                     </el-tab-pane>
                 </el-tabs>
             </div>
         </div>
+        <el-dialog
+            :visible.sync="previewFlag"
+            :before-close="closePreview"
+            width="750px"
+            title="预览">
+            <preview :detail="detail"></preview>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 import Enterprise from '@/components/enterprise'
 import Origin from '@/components/origin'
+import ProductInfo from '@/components/productInfo'
+import Preview from '@/components/preview'
 import { api } from '@/config'
+import { Loading } from '../assets/js/mixins'
 export default {
     name: 'record',
+    mixins: [Loading],
     data() {
         return {
             activeName: 'enterprise',
             goodsList: [],
-            active: 0
+            active: 0,
+            previewFlag: false,
+            detail: {
+                source: [],
+                goodsDetails: [],
+                goodsName: '',
+                createDate: 0,
+                sourceOriginInitial: 0,
+                goodsCompany: {
+                    name: '',
+                    details: ''
+                }
+            }
         }
     },
     components: {
         Enterprise,
-        Origin
+        Origin,
+        ProductInfo,
+        Preview
     },
     methods: {
         clickItem(item, key) {
@@ -61,13 +106,76 @@ export default {
                 })
         },
         getDetail(goodsName) {
+            this.showLoading()
             this.http.post(`${api.goods}/goods/detailList`, {goodsName})
                 .then(res => {
-                    console.log(',,,,', res)
+                    if (res.data && res.data.result) {
+                        let {data} = res.data
+                        let dataObj = data[0]
+                        let {createDate, goodsDetails, goodsName, source, _id, sourceOriginInitial, goodsCompany} = dataObj
+                        this.detail = Object.assign({}, this.detail, {
+                            createDate,
+                            goodsDetails,
+                            goodsName,
+                            source,
+                            id: _id,
+                            sourceOriginInitial: Number(sourceOriginInitial) || 1000000000,
+                            goodsCompany: goodsCompany || {name: '', details: ''}
+                        })
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                    this.hideLoading()
                 })
                 .catch(err => {
                     console.error(err)
+                    this.hideLoading()
                 })
+        },
+        successAdd({goodsName}) {
+            this.getDetail(goodsName)
+        },
+        nextTab(type) {
+            if (type) {
+                this.activeName = 'product'
+            }
+        },
+        checkTab() {
+            if (this.$refs.enterpriseTemp.enterprise.name) {
+                return true
+            } else {
+                this.$message.error('请输入企业名称')
+                return false
+            }
+        },
+        saveDetail(params) {
+            if (this.checkTab) {
+                params = Object.assign({}, params, {
+                    goodsCompany: {
+                        name: this.$refs.enterpriseTemp.enterprise.name,
+                        details: this.$refs.enterpriseTemp.enterprise.details
+                    }
+                })
+                this.http.post(`${api.goods}/goods/addDetail`, params)
+                    .then(res => {
+                        if (res.data && res.data.result) {
+                            this.$message.success('保存成功')
+                            this.$emit('success-add-detail', {goodsName: this.goodsName})
+                        } else {
+                            this.$message.error(res.data.msg)
+                        }
+                    })
+                    .catch(err => {
+                        this.$message.error(err)
+                        console.error(err)
+                    })
+            }
+        },
+        preview() {
+            this.previewFlag = true
+        },
+        closePreview() {
+            this.previewFlag = false
         }
     },
     created() {

@@ -3,7 +3,7 @@
         <header>
             <ul>
                 <li class="title fl"
-                    @click="toIndex">云空间图书管理系统</li>
+                    @click="toIndex">商品管理系统</li>
                 <li class="user-name fs-16">
                     <span style="font-weight: normal;">您好: </span>{{username}}</li>
                 <li class="log-out fs-14"

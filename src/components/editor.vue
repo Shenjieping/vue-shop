@@ -1,19 +1,24 @@
 <template>
     <div :class="$options.name">
         <el-form ref="addForm" :model="formAdd">
-            <el-form-item label="名称">
+            <el-form-item
+                label="产品名称："
+                prop="name"
+                :rules="[{required: true, message: '请输入产品名称', trigger: 'blur'}]">
                 <el-input v-model="formAdd.name"></el-input>
                 <el-button type="primary" @click="add">新增</el-button>
             </el-form-item>
             <el-form-item
                 v-for="(item, k) in formAdd.domain"
-                :key="k">
+                :prop="'domain.' + k + '.key'"
+                :key="k"
+                :rules="[{required: true, message: '请输入值', trigger: 'blur'}]">
                 <el-input
                     :prop="'domain.' + k + '.name1'"
-                    v-model="item.name1"></el-input>
+                    v-model="item.key"></el-input>
                 <el-input
                     :prop="'domain.' + k + '.name2'"
-                    v-model="item.name2"></el-input>
+                    v-model="item.val"></el-input>
                 <el-button
                     type="primary"
                     @click="deleteInput(k)"
@@ -34,7 +39,7 @@
                     <el-upload
                         class="avatar-uploader"
                         action="/"
-                        :limit="3"
+                        accept="image/gif, image/jpeg, image/jpg, image/png, image/webp"
                         :show-file-list="false"
                         :on-success="handleAvatarSuccess"
                         v-if="imageList.length < 3"
@@ -49,7 +54,7 @@
                 </div>
             </el-form-item>
             <el-form-item class="sure-btn">
-                <el-button type="primary" @click="sure">确定</el-button>
+                <el-button type="primary" @click="sure('addForm')">暂存</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -69,8 +74,8 @@ export default {
                 name: '',
                 domain: [
                     {
-                        name1: '',
-                        name2: ''
+                        key: '',
+                        val: ''
                     }
                 ]
             },
@@ -84,11 +89,45 @@ export default {
             ]
         }
     },
+    props: {
+        goodsName: {
+            type: String,
+            default: ''
+        },
+        goodsDetails: {
+            type: Object,
+            default() {
+                return {
+                    goodsListName: '',
+                    goodsNaturePics: {},
+                    goodsNatures: []
+                }
+            }
+        },
+        isAdd: {
+            type: Boolean,
+            default: false
+        }
+    },
+    watch: {
+        isAdd: {
+            handler(val) {
+                // 修改
+                if (!val) {
+                    console.log(this.goodsDetails)
+                    let {goodsListName, goodsNaturePics, goodsNatures} = this.goodsDetails
+                    this.formAdd.name = goodsListName
+                    this.formAdd.domain = [...goodsNatures]
+                }
+            },
+            immediate: true
+        }
+    },
     methods: {
         add() {
             this.formAdd.domain.push({
-                name1: '',
-                name2: ''
+                key: '',
+                val: ''
             })
         },
         deleteInput(k) {
@@ -98,20 +137,28 @@ export default {
 
         },
         beforeAvatarUpload(file) {
-            console.log('....', file);
+            console.log('....', file)
         },
         handleRemove(key) {
-            this.imageList.splice(key, 1);
+            this.imageList.splice(key, 1)
         },
-        sure() {
-            console.log(this.formAdd);
-            let {name, domain} = this.formAdd;
-            let params = {
-                info: name,
-                list: domain,
-                imageList: this.imageList
-            };
-            this.$emit('sure-editor', params);
+        sure(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    let {name, domain} = this.formAdd
+                    let params = {
+                        goodsListName: name,
+                        goodsNatures: [...domain],
+                        goodsNaturePics: {
+                            goodsNaturePicsName: '',
+                            goodsNaturePics: []
+                        }
+                    }
+                    this.$emit('sure-editor', params)
+                } else {
+                    return false
+                }
+            })
         }
     }
 }
