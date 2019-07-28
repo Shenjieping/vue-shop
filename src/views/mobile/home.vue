@@ -1,14 +1,25 @@
 <template>
     <div :class="$options.name">
         <div class="header">
-            <div class="title">上海智辉农业专业合作社产品追溯系统</div>
-            <div class="title-bus" v-if="detailObj.transmit === 0">首次查询，欢迎您购买松江牌大米</div>
-            <div class="title-bus" v-else>该产品已被查询 <i>{{ detailObj.transmit }}</i> 次</div>
+            <div class="title">
+                <div>{{detailObj.goodsCompany && detailObj.goodsCompany.name}}</div>
+                <div>{{detailObj.goodsCompany && detailObj.goodsCompany.details}}</div>
+            </div>
+        </div>
+        <div class="info">
+            <div class="product-code">
+                <span class="name">产品编码：</span>
+                <span class="code">{{detailObj.productCode}}</span>
+            </div>
+            <div class="count">
+                已查询 <i>{{detailObj.transmit}}</i> 次
+            </div>
         </div>
         <div
             class="list"
             v-for="(info, k) in detailObj.goodsDetails"
-            :key="k">
+            :key="k"
+            v-show="setMore(k)">
             <div class="total">{{info.goodsListName}}</div>
             <ul>
                 <li
@@ -18,10 +29,12 @@
                     <span class="content">{{item.val}}</span>
                 </li>
             </ul>
-            <div
-                class="show-more"
-                @click="showMore">点击查看更多</div>
         </div>
+        <div class="foot-btn">
+            <div class="more" @click="showMore" v-if="!showMoreFlag">更多溯源信息</div>
+            <div class="play" :class="{'hide-more': showMoreFlag}">立即购买</div>
+        </div>
+        <div class="foot-title">上海市松江区农民专业合作联社产品安全监督办公室</div>
     </div>
 </template>
 
@@ -42,15 +55,26 @@ export default {
                 goodsDetails: [],
                 goodsName: '',
                 source: [],
-                transmit: 0
-            }
+                transmit: 0, // 查询次数
+                productCode: '',
+                goodsCompany: {
+                    name: '',
+                    details: ''
+                }
+            },
+            showMoreFlag: false
         }
     },
     methods: {
         showMore() {
-            this.$router.push({
-                name: 'MobileDetail'
-            })
+            this.showMoreFlag = true
+        },
+        setMore(k) {
+            if (this.showMoreFlag) {
+                return true
+            } else {
+                return k === 0
+            }
         },
         getDetail(goodsName, num) {
             this.http.post(`${api.goods}/goods/detailpadList`, {
@@ -59,15 +83,16 @@ export default {
             })
                 .then(res => {
                     if (res.data && res.data.result) {
-                        let {createDate, goodsDetails, goodsName, source, transmit} = res.data.data[0]
+                        let {createDate, goodsDetails, goodsName, source, transmit, goodsCompany} = res.data.data[0]
                         this.detailObj = Object.assign({}, this.detailObj, {
                             createDate,
                             goodsDetails,
                             goodsName,
                             source,
-                            transmit
+                            transmit,
+                            goodsCompany,
+                            productCode: this.$route.query.num || ''
                         })
-                        console.log(this.detailObj, '...')
                     } else {
                         this.$message.error(res.data.msg)
                     }
@@ -94,37 +119,70 @@ export default {
 
 <style lang="scss" scoped>
 .mobile-home {
+    position: relative;
+    min-height: 100%;
+    box-sizing: border-box;
+    padding-bottom: 30px;
     .header {
         height: 200px;
-        background-color: #0ba69b;
+        background-color: #01582d;
         position: relative;
+        border-radius: 6px;
         div {
             text-align: center;
             &.title {
-                height: 200px;
-                line-height: 200px;
-                font-size: 18px;
+                // height: 200px;
+                font-size: 22px;
                 color: #fff;
-            }
-            &.title-bus {
                 position: absolute;
+                top: 50%;
+                left: 0;
+                padding: 0 20px;
+                line-height: 2;
+                transform: translateY(-50%);
                 width: 100%;
-                bottom: 20px;
-                i {
-                    color: #f00;
-                    font-style: normal;
-                }
+                box-sizing: border-box;
+            }
+        }
+    }
+    .info {
+        border: 1px solid #01582d;
+        margin-top: 10px;
+        border-radius: 4px;
+        .product-code {
+            line-height: 32px;
+            text-align: center;
+            font-size: 18px;
+            .name {
+                font-weight: 600;
+                color: #000;
+            }
+            .code {
+                color: #f66;
+            }
+        }
+        .count {
+            text-align: center;
+            line-height: 32px;
+            font-size: 16px;
+            i {
+                font-style: normal;
+                color: #f66;
             }
         }
     }
     .list {
-        margin-top: 20px;
+        margin-top: 10px;
+        border: 1px solid #01582d;
+        border-radius: 6px;
+        overflow: hidden;
+        padding-bottom: 10px;
         .total {
-            background-color: #0ba69b;
+            background-color: #01582d;
             font-size: 16px;
             color: #fff;
-            line-height: 32px;
-            padding: 0 20px;
+            line-height: 40px;
+            padding: 0 10px;
         }
         ul {
             padding: 0;
@@ -140,7 +198,7 @@ export default {
                     line-height: 32px;
                     font-size: 14px;
                     &.title {
-                        width: 78px;
+                        // width: 78px;
                         text-align: justify;
                         color: #000;
                         text-align-last: justify;
@@ -161,6 +219,42 @@ export default {
             border-radius: 4px;
             text-align: center;
         }
+    }
+    .foot-btn {
+        display: flex;
+        margin: 20px 10px;
+        .more,
+        .play {
+            flex: 1;
+            height: 44px;
+            line-height: 44px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .more {
+            background-color: #01582d;
+            border-radius: 4px 0 0 4px;
+            color: #fff;
+            border: 1px solid #01582d;
+            border-right: none;
+        }
+        .play {
+            border: 1px solid #aaa;
+            border-radius: 0 4px 4px 0;
+            border-left: none;
+            &.hide-more {
+                border-left: 1px solid #aaa;
+                border-radius: 4px;
+            }
+        }
+    }
+    .foot-title {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        font-size: 12px;
+        width: 100%;
+        text-align: center;
     }
 }
 </style>

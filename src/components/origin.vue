@@ -38,7 +38,7 @@
                     <el-button
                         type="text"
                         size="small"
-                        @click="download(scope.row)">下载溯源码</el-button>
+                        @click="handleDownload(scope.row)">下载溯源码</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -86,7 +86,8 @@ export default {
                     {required: true, message: '不能为空'},
                     {type: 'number', message: '必须为数字值'}
                 ]
-            }
+            },
+            flag: true
         }
     },
     props: {
@@ -108,7 +109,7 @@ export default {
         },
         sourceInit: {
             type: Number,
-            default: 1000000000
+            default: 1000000
         }
     },
     computed: {
@@ -131,32 +132,41 @@ export default {
         closeCode() {
             this.showCode = false
         },
-        download(row) {
-            console.log('.....', row)
-        },
         addOrigin(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
+                    if (this.codeFrom.count > 10000) {
+                        this.$message.error('请输入小于10000的数据')
+                        return false
+                    }
                     let paramsSource = {
                         goodsName: this.goodsName,
                         sourceOriginNum: this.codeFrom.count,
                         sourceOriginBegin: this.originBegin,
                         sourceOriginCreateDate: new Date().getTime()
                     }
-                    this.http.post(`${api.goods}/goods/addSource`, paramsSource)
-                        .then(res => {
-                            if (res.data && res.data.result) {
-                                this.$message.success('添加成功')
-                                this.$emit('success-add-resouce', {goodsName: this.goodsName})
-                                this.closeCode()
-                            } else {
-                                this.$message.error(res.data.msg || '添加失败')
-                            }
-                        })
-                        .catch(err => {
-                            this.$message.error(err || '添加失败')
-                            console.error(err)
-                        })
+                    if (this.flag) {
+                        this.flag = false
+                        this.http.post(`${api.goods}/goods/addSource`, paramsSource)
+                            .then(res => {
+                                if (res.data && res.data.result) {
+                                    this.$message.success('添加成功')
+                                    this.$emit('success-add-resouce', {goodsName: this.goodsName})
+                                    this.http.post(`${api.goods}/record/add`, {
+                                        type: `${this.goodsName} 添加溯源码`
+                                    })
+                                    this.closeCode()
+                                } else {
+                                    this.$message.error(res.data.msg || '添加失败')
+                                }
+                                this.flag = true
+                            })
+                            .catch(err => {
+                                this.$message.error(err || '添加失败')
+                                console.error('添加失败')
+                                this.flag = true
+                            })
+                    }
                 } else {
                     console.log('error submit!!')
                     return false
@@ -166,6 +176,52 @@ export default {
         setTime(time) {
             time = Number(time)
             return Util.dateFormat(time, 'YYYY-MM-DD H:M')
+        },
+        /**
+         * excel导出
+         */
+        handleDownload(row) {
+            let {sourceOriginAmount} = row
+            const loading = this.$loading({
+                lock: true,
+                text: '正在导出，请稍等......',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            var _this = this
+            this.downloadLoading = true
+            import('@/vendor/Export2Excel.js').then(excel => {
+                const tHeader = ['编号', '商品名称', '溯源码']
+                const filterVal = ['index', 'goodsName', 'sourceCode']
+
+                const list = (sourceOriginAmount || []).map((item, key) => {
+                    return {
+                        index: key + 1,
+                        goodsName: _this.goodsName,
+                        sourceCode: item.key
+                    }
+                })
+
+                if (list) {
+                    const data = this.formatJson(filterVal, list)
+                    excel.export_json_to_excel({
+                        header: tHeader,
+                        data,
+                        filename: this.goodsName
+                    })
+                } else {
+                    _this.$message({
+                        duration: 1000,
+                        type: 'warning',
+                        message: this.excelTypeName.tabIndexName + '暂无数据'
+                    })
+                }
+                this.downloadLoading = false
+                loading.close()
+            })
+        },
+        formatJson (filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => v[j]))
         }
     }
 }

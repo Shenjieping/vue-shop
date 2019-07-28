@@ -8,18 +8,24 @@
                 element-loading-text="拼命加载中"
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)">
-                <el-table-column label="序号"
-                    width="80">
+                <el-table-column
+                    label="序号"
+                    width="80"
+                    align="center">
                     <template slot-scope="scope">
                         {{scope.$index + 1}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="_id"
-                    label="书名">
+                <el-table-column
+                    prop="type"
+                    label="操作方式"
+                    align="center">
                 </el-table-column>
-                <el-table-column label="被加入愿望单">
+                <el-table-column
+                    label="操作时间"
+                    align="center">
                     <template slot-scope="scope">
-                        {{scope.row.account}} 次
+                        <span>{{setTime(scope.row.createDate)}}</span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -30,6 +36,7 @@
 <script>
 import { api } from '@/config'
 import { Loading } from '../assets/js/mixins'
+import * as Util from '@/assets/js/utils.js'
 
 export default {
     name: 'wishes',
@@ -42,7 +49,7 @@ export default {
     methods: {
         getWishesList() {
             this.showLoading()
-            this.http.get(`${api.wishApi}/list`)
+            this.http.get(`${api.goods}/record/list`)
                 .then(res => {
                     if (res.data.result) {
                         this.wishesList = res.data.data
@@ -52,12 +59,17 @@ export default {
                     this.hideLoading()
                 }).catch(err => {
                     this.hideLoading()
-                    this.$message.error(err)
+                    console.error(err)
+                    this.$message.error('加载失败')
                 })
+        },
+        setTime(time) {
+            time = Number(time)
+            return Util.dateFormat(time, 'YYYY-MM-DD H:M')
         }
     },
     created() {
-        // this.getWishesList()
+        this.getWishesList()
     }
 }
 </script>

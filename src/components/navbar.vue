@@ -13,7 +13,7 @@
     </div>
 </template>
 <script>
-import Store from 'store2'
+// import Store from 'store2'
 
 export default {
     name: 'navbar',
@@ -32,8 +32,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                Store.remove('username')
-                Store.set('isLogin', 0)
+                this.clearCookie('userName')
                 this.$router.push('/login')
             }).catch(() => {
                 this.$message({
@@ -41,10 +40,29 @@ export default {
                     message: '已取消'
                 })
             })
+        },
+        clearCookie(name) {
+            this.setCookie(name, '', -1)
+        },
+        setCookie(cname, cvalue, exdays) {
+            var d = new Date()
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
+            var expires = 'expires=' + d.toUTCString()
+            document.cookie = cname + '=' + cvalue + '; ' + expires
+        },
+        getCookie(cname) {
+            var name = cname + '='
+            var ca = document.cookie.split(';')
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i]
+                while (c.charAt(0) === ' ') c = c.substring(1)
+                if (c.indexOf(name) !== -1) return c.substring(name.length, c.length)
+            }
+            return ''
         }
     },
     mounted() {
-        this.username = Store.get('username')
+        this.username = this.getCookie('userName')
     }
 }
 </script>

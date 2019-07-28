@@ -1,6 +1,6 @@
 <template>
     <div class="login-container">
-        <div class="title white">云空间图书馆</div>
+        <div class="title white">商品管理</div>
         <div class="main">
             <el-form :model="user"
                 :rules="rules"
@@ -27,7 +27,7 @@
 
 <script>
 import { api } from '@/config'
-import Store from 'store2'
+// import Store from 'store2'
 
 export default {
     name: 'login',
@@ -47,27 +47,47 @@ export default {
         login() {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
-                    this.http.post(api.loginApi, {
+                    this.http.post(`${api.goods}/user/login`, {
                         name: this.user.name,
                         pwd: this.user.pwd
                     }).then(res => {
                         if (res.data.result) {
-                            Store.set('username', this.user.name)
-                            Store.set('isLogin', 1)
-                            this.$router.push('/books')
+                            this.setCookie('userName', this.user.name, 1)
+                            this.$router.push('/list')
+                            this.http.post(`${api.goods}/record/add`, {
+                                type: `${this.user.name} 用户登录`
+                            })
                         } else {
                             this.$message.error(res.data.msg)
                         }
                     }).catch(error => {
-                        this.$message.error(error)
+                        this.$message.error('登录失败')
+                        console.error(error)
                     })
                 }
             })
+        },
+        setCookie(cname, cvalue, exdays) {
+            var d = new Date()
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
+            var expires = 'expires=' + d.toUTCString()
+            document.cookie = cname + '=' + cvalue + '; ' + expires
+        },
+        getCookie(cname) {
+            var name = cname + '='
+            var ca = document.cookie.split(';')
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i]
+                while (c.charAt(0) === ' ') c = c.substring(1)
+                if (c.indexOf(name) !== -1) return c.substring(name.length, c.length)
+            }
+            return ''
         }
+
     },
     created() {
-        if (Store.get('isLogin') === 1) {
-            this.$router.push('books')
+        if (this.getCookie('userName')) {
+            this.$router.push('/list')
         }
     }
 }
@@ -91,8 +111,8 @@ export default {
     width: 30%;
     margin: 0 auto;
     padding: 40px;
-    background-color: rgba(10, 10, 10, 0.77);
-    border: 2px ridge rgba(238, 238, 238, 0.13);
+    // background-color: rgba(10, 10, 10, 0.77);
+    // border: 2px ridge rgba(238, 238, 238, 0.13);
     border-radius: 5px;
     -moz-box-shadow: 0 -5px 10px 1px rgba(16, 16, 16, 0.57);
     -webkit-box-shadow: 0 -5px 10px 1px rgba(16, 16, 16, 0.57);

@@ -46,7 +46,7 @@
         <el-dialog
             :visible.sync="previewFlag"
             :before-close="closePreview"
-            width="750px"
+            width="375px"
             title="预览">
             <preview :detail="detail"></preview>
         </el-dialog>
@@ -119,7 +119,7 @@ export default {
                             goodsName,
                             source,
                             id: _id,
-                            sourceOriginInitial: Number(sourceOriginInitial) || 1000000000,
+                            sourceOriginInitial: Number(sourceOriginInitial) || 1000000,
                             goodsCompany: goodsCompany || {name: '', details: ''}
                         })
                     } else {
@@ -161,6 +161,9 @@ export default {
                         if (res.data && res.data.result) {
                             this.$message.success('保存成功')
                             this.$emit('success-add-detail', {goodsName: this.goodsName})
+                            this.http.post(`${api.goods}/record/add`, {
+                                type: `${this.goodsName} 添加商品信息`
+                            })
                         } else {
                             this.$message.error(res.data.msg)
                         }

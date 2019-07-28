@@ -126,6 +126,9 @@ export default {
                             this.$message.success('添加成功')
                             this.getUserList()
                             this.addModal = false
+                            this.http.post(`${api.goods}/record/add`, {
+                                type: `添加商品 ${this.user.name}`
+                            })
                         } else {
                             this.$message.error(`添加失败:${res.data.msg}`)
                         }
@@ -146,6 +149,9 @@ export default {
                         if (res.data.result) {
                             this.$message.success('删除成功')
                             this.getUserList()
+                            this.http.post(`${api.goods}/record/add`, {
+                                type: `删除商品 ${goodsName}`
+                            })
                         } else {
                             this.$message.error('删除失败')
                         }

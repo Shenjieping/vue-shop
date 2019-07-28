@@ -60,8 +60,8 @@ body,
 .login {
   width: 100%;
   height: 100%;
-  background: url("./assets/image/bg.jpg") no-repeat center;
-  background-size: cover;
+  background: #1587f8;
+//   background-size: cover;
 }
 .mobile-phone {
     overflow: auto;

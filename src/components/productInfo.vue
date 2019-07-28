@@ -27,7 +27,7 @@
                     <span>{{nat.val}}</span>
                 </div>
             </div>
-            <el-button type="primary" @click="saveResult()" v-if="hasEdit">保存</el-button>
+            <el-button type="primary" @click="saveResult()" v-if="hasEdit" :disabled="goodsDetails.length === 0">保存</el-button>
         </div>
         <el-dialog
             :visible.sync="showAdd"
