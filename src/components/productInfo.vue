@@ -32,7 +32,8 @@
         <el-dialog
             :visible.sync="showAdd"
             :before-close="closeAdd"
-            :title="isAdd ? '新增' : '修改'">
+            :title="isAdd ? '新增' : '修改'"
+            :close-on-click-modal="false">
             <editor
                 v-if="showAdd"
                 :goods-name="goodsName"

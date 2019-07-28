@@ -46,10 +46,12 @@
         <el-dialog
             :visible.sync="showCode"
             title="生成溯源码"
+            :close-on-click-modal="false"
             :before-close="closeCode"
             width="400px">
             <el-form
                 ref="codeForm"
+                v-if="showCode"
                 :model="codeFrom"
                 :rules="rules"
                 label-width="80px">
@@ -131,6 +133,7 @@ export default {
         },
         closeCode() {
             this.showCode = false
+            this.codeFrom.count = ''
         },
         addOrigin(formName) {
             this.$refs[formName].validate((valid) => {

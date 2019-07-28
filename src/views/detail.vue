@@ -46,6 +46,7 @@
         <el-dialog
             :visible.sync="previewFlag"
             :before-close="closePreview"
+            :close-on-click-modal="false"
             width="375px"
             title="预览">
             <preview :detail="detail"></preview>

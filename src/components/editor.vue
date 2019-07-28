@@ -6,6 +6,10 @@
                 prop="name"
                 :rules="[{required: true, message: '请输入产品名称', trigger: 'blur'}]">
                 <el-input v-model="formAdd.name"></el-input>
+                <!-- <el-button type="primary" @click="add">新增</el-button> -->
+            </el-form-item>
+            <el-form-item
+                label="产品信息：">
                 <el-button type="primary" @click="add">新增</el-button>
             </el-form-item>
             <el-form-item
@@ -15,14 +19,15 @@
                 :rules="[{required: true, message: '请输入值', trigger: 'blur'}]">
                 <el-input
                     :prop="'domain.' + k + '.name1'"
+                    placeholder="请输入名称"
                     v-model="item.key"></el-input>
                 <el-input
                     :prop="'domain.' + k + '.name2'"
+                    placeholder="请输入值"
                     v-model="item.val"></el-input>
                 <el-button
                     type="primary"
-                    @click="deleteInput(k)"
-                    v-if="formAdd.domain.length > 1">删除</el-button>
+                    @click="deleteInput(k)">删除</el-button>
             </el-form-item>
             <el-form-item label="上传图片">
                 <div class="image-list">
@@ -38,7 +43,7 @@
                     </figure>
                     <el-upload
                         class="avatar-uploader"
-                        action="/"
+                        action="/upload/uploadImage"
                         accept="image/gif, image/jpeg, image/jpg, image/png, image/webp"
                         :show-file-list="false"
                         :on-success="handleAvatarSuccess"
@@ -79,14 +84,7 @@ export default {
                     }
                 ]
             },
-            imageList: [
-                {
-                    url: '//10.url.cn/qqcourse_logo_ng/ajNVdqHZLLDWoicvGibs2frpUgmg2FBF7BIU58EZT0Vm3aeGB3ZKc4S7WYauyfc4zL5BZmr1ibPL6o/356'
-                },
-                {
-                    url: '//10.url.cn/qqcourse_logo_ng/ajNVdqHZLLDWoicvGibs2frpUgmg2FBF7BIU58EZT0Vm3aeGB3ZKc4S7WYauyfc4zL5BZmr1ibPL6o/356'
-                }
-            ]
+            imageList: []
         }
     },
     props: {
@@ -134,7 +132,11 @@ export default {
             this.formAdd.domain.splice(k, 1)
         },
         handleAvatarSuccess(res, file) {
-
+            // 上传成功的回调
+            // this.imageList.push({
+            //     url: res.result.data,
+            //     name: file.name
+            // })
         },
         beforeAvatarUpload(file) {
             console.log('....', file)
@@ -212,6 +214,9 @@ export default {
     }
     .sure-btn {
         text-align: right;
+    }
+    .el-button {
+        padding: 10px 20px;
     }
 }
 </style>
