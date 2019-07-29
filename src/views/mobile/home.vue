@@ -29,6 +29,14 @@
                     <span class="content">{{item.val}}</span>
                 </li>
             </ul>
+            <div class="image-box">
+                <div class="img-title" v-if="info.goodsNaturePics.goodsNaturePicsName">{{info.goodsNaturePics.goodsNaturePicsName}}：</div>
+                <figure
+                    v-for="(img, m) in info.goodsNaturePics.goodsNaturePics"
+                    :key="m">
+                    <img :src="img" alt="" />
+                </figure>
+            </div>
         </div>
         <div class="foot-btn">
             <div class="more" @click="showMore" v-if="!showMoreFlag">更多溯源信息</div>
@@ -118,6 +126,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$THEME: #014d27;
 .mobile-home {
     position: relative;
     min-height: 100%;
@@ -125,7 +134,7 @@ export default {
     padding-bottom: 30px;
     .header {
         height: 200px;
-        background-color: #01582d;
+        background-color: $THEME;
         position: relative;
         border-radius: 6px;
         div {
@@ -146,7 +155,7 @@ export default {
         }
     }
     .info {
-        border: 1px solid #01582d;
+        border: 1px solid $THEME;
         margin-top: 10px;
         border-radius: 4px;
         .product-code {
@@ -173,12 +182,12 @@ export default {
     }
     .list {
         margin-top: 10px;
-        border: 1px solid #01582d;
+        border: 1px solid $THEME;
         border-radius: 6px;
         overflow: hidden;
         padding-bottom: 10px;
         .total {
-            background-color: #01582d;
+            background-color: $THEME;
             font-size: 16px;
             color: #fff;
             line-height: 40px;
@@ -232,10 +241,10 @@ export default {
             font-size: 18px;
         }
         .more {
-            background-color: #01582d;
+            background-color: $THEME;
             border-radius: 4px 0 0 4px;
             color: #fff;
-            border: 1px solid #01582d;
+            border: 1px solid $THEME;
             border-right: none;
         }
         .play {
@@ -255,6 +264,19 @@ export default {
         font-size: 12px;
         width: 100%;
         text-align: center;
+    }
+    .image-box {
+        .img-title {
+            margin: 5px 10px;
+            font-size: 14px;
+            color: #000;
+        }
+        figure {
+            margin: 0 5px 20px;
+            img {
+                width: 100%;
+            }
+        }
     }
 }
 </style>

@@ -13,7 +13,8 @@
                     <span v-else>{{enterprise.name}}</span>
                 </el-form-item>
                 <el-form-item
-                    label="企业描述">
+                    label="企业描述"
+                    prop="details">
                     <el-input v-model="enterprise.details" placeholder="请输入企业描述" v-if="hasEdit"></el-input>
                     <span v-else>{{enterprise.details}}</span>
                 </el-form-item>
@@ -39,7 +40,13 @@ export default {
                 details: ''
             },
             rules: {
-                name: [{ required: true, message: '请输入企业名称', trigger: 'blur' }]
+                name: [
+                    { required: true, message: '请输入企业名称', trigger: 'blur' },
+                    { max: 30, message: '请输入小于30字的名称', trigger: 'blur' }
+                ],
+                details: [
+                    { max: 30, message: '请输入小于30字的描述', trigger: 'blur' }
+                ]
             }
         }
     },

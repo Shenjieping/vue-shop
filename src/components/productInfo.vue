@@ -26,6 +26,14 @@
                     <span>{{nat.key}}：</span>
                     <span>{{nat.val}}</span>
                 </div>
+                <div class="image-list">
+                    <div class="img-title">{{info.goodsNaturePics.goodsNaturePicsName}}</div>
+                    <figure
+                        v-for="(img, m) in info.goodsNaturePics.goodsNaturePics"
+                        :key="m">
+                        <img :src="img" alt="" />
+                    </figure>
+                </div>
             </div>
             <el-button type="primary" @click="saveResult()" v-if="hasEdit" :disabled="goodsDetails.length === 0">保存</el-button>
         </div>
@@ -56,6 +64,7 @@ export default {
             detailList: [],
             index: 0,
             previewFlag: false
+
         }
     },
     components: {
@@ -173,6 +182,32 @@ export default {
         }
         .el-button--primary {
             margin-bottom: 20px;
+        }
+    }
+    .image-list {
+        zoom: 1;
+        &::after {
+            content: '';
+            height: 0;
+            width: 0;
+            display: block;
+            visibility: visible;
+            overflow: hidden;
+            clear: both;
+        }
+        .img-title {
+            margin-top: 5px;
+        }
+        figure {
+            width: 30%;
+            height: 200px;
+            float: left;
+            margin: 20px 1%;
+            img {
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+            }
         }
     }
 }

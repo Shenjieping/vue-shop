@@ -29,12 +29,15 @@
                     type="primary"
                     @click="deleteInput(k)">删除</el-button>
             </el-form-item>
-            <el-form-item label="上传图片">
+            <el-form-item label="上传图片：">
+                <el-input
+                    v-model="formAdd.imageName"
+                    placeholder="请输入图片名称"></el-input>
                 <div class="image-list">
                     <figure
                         v-for="(item ,i) in imageList"
                         :key="i">
-                        <img :src="item.url" alt="">
+                        <img :src="item" alt="">
                         <span
                             class="el-item-delete"
                             @click="handleRemove(i)">
@@ -71,6 +74,7 @@
 * @author shenjp@founder.com
 * @date 2019-07-20 16:41:35
 */
+import { api } from '@/config'
 export default {
     name: 'editor',
     data() {
@@ -82,7 +86,8 @@ export default {
                         key: '',
                         val: ''
                     }
-                ]
+                ],
+                imageName: ''
             },
             imageList: []
         }
@@ -116,6 +121,8 @@ export default {
                     let {goodsListName, goodsNaturePics, goodsNatures} = this.goodsDetails
                     this.formAdd.name = goodsListName
                     this.formAdd.domain = [...goodsNatures]
+                    this.formAdd.imageName = goodsNaturePics.goodsNaturePicsName
+                    this.imageList = goodsNaturePics ? [...goodsNaturePics.goodsNaturePics] : []
                 }
             },
             immediate: true
@@ -133,13 +140,19 @@ export default {
         },
         handleAvatarSuccess(res, file) {
             // 上传成功的回调
-            // this.imageList.push({
-            //     url: res.result.data,
-            //     name: file.name
-            // })
+            this.imageList.push(api.imageUrl + res.result.data)
         },
         beforeAvatarUpload(file) {
-            console.log('....', file)
+            // const isImg = file.type === 'image/jpeg'
+            const isImg = /image\/jpg|jpeg|png|gif|webp/.test(file.type)
+            const isLt2M = file.size < (1 << 10 * 2)
+            if (!isImg) {
+                this.$message.error('只能上传gif,jpeg,jpg,png,webp格式的图片！')
+            }
+            if (!isLt2M) {
+                this.$message.error('图片大小不能超过2M！')
+            }
+            return isImg && isLt2M
         },
         handleRemove(key) {
             this.imageList.splice(key, 1)
@@ -147,13 +160,14 @@ export default {
         sure(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    let {name, domain} = this.formAdd
+                    let {name, domain, imageName} = this.formAdd
+                    console.log(imageName)
                     let params = {
                         goodsListName: name,
                         goodsNatures: [...domain],
                         goodsNaturePics: {
-                            goodsNaturePicsName: '',
-                            goodsNaturePics: []
+                            goodsNaturePicsName: imageName,
+                            goodsNaturePics: [...this.imageList]
                         }
                     }
                     this.$emit('sure-editor', params)
@@ -187,6 +201,7 @@ export default {
         }
     }
     .image-list {
+        margin-top: 20px;
         figure {
             height: 100px;
             width: 100px;
@@ -199,6 +214,7 @@ export default {
                 height: 100%;
                 width: 100%;
                 object-fit: cover;
+                border-radius: 4px;
             }
             .el-item-delete {
                 position: absolute;

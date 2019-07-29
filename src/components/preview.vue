@@ -19,6 +19,14 @@
                     <span class="content">{{item.val}}</span>
                 </li>
             </ul>
+            <div class="image-box">
+                <div class="img-title" v-if="info.goodsNaturePics.goodsNaturePicsName">{{info.goodsNaturePics.goodsNaturePicsName}}：</div>
+                <figure
+                    v-for="(img, m) in info.goodsNaturePics.goodsNaturePics"
+                    :key="m">
+                    <img :src="img" alt="" />
+                </figure>
+            </div>
         </div>
     </div>
 </template>
@@ -42,11 +50,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$THEME: #014d27;
 .preview {
     // border: 1px solid #ccc;
     .header {
         height: 200px;
-        background-color: #01582d;
+        background-color: $THEME;
         position: relative;
         border-radius: 6px;
         div {
@@ -68,12 +77,12 @@ export default {
     }
     .list {
         margin-top: 10px;
-        border: 1px solid #01582d;
+        border: 1px solid $THEME;
         border-radius: 6px;
         overflow: hidden;
         padding-bottom: 10px;
         .total {
-            background-color: #01582d;
+            background-color: $THEME;
             font-size: 16px;
             color: #fff;
             line-height: 40px;
@@ -102,6 +111,19 @@ export default {
                         color: #999;
                     }
                 }
+            }
+        }
+    }
+    .image-box {
+        .img-title {
+            margin: 5px 10px;
+            font-size: 14px;
+            color: #000;
+        }
+        figure {
+            margin: 0 5px 20px;
+            img {
+                width: 100%;
             }
         }
     }

@@ -46,7 +46,7 @@
                 </el-table-column>
             </el-table>
         </div>
-        <el-dialog title="添加用户"
+        <el-dialog title="添加商品"
             :visible.sync="addModal"
             v-if="addModal"
             width="35%">
