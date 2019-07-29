@@ -14,8 +14,7 @@
             <div class="tabs-box">
                 <el-tabs
                     v-model="activeName"
-                    type="border-card"
-                    :before-leave="checkTab">
+                    type="border-card">
                     <el-tab-pane label="企业信息" name="enterprise">
                         <enterprise
                             :hasEdit="detail.source.length === 0"
@@ -145,12 +144,12 @@ export default {
             if (this.$refs.enterpriseTemp.enterprise.name) {
                 return true
             } else {
-                this.$message.error('请输入企业名称')
+                this.$message.error('请输入企业信息')
                 return false
             }
         },
         saveDetail(params) {
-            if (this.checkTab) {
+            if (this.checkTab()) {
                 params = Object.assign({}, params, {
                     goodsCompany: {
                         name: this.$refs.enterpriseTemp.enterprise.name,

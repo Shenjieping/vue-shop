@@ -3,7 +3,7 @@
         <div class="product-box">
             <div>
                 <el-button type="primary" @click="showAddHandle(true)" v-if="hasEdit">新增</el-button>
-                <el-button type="primary" @click="preview()">预览</el-button>
+                <el-button type="primary" @click="preview()" :disabled="goodsDetails.length === 0">预览</el-button>
             </div>
             <div
                 class="product-box-list"
