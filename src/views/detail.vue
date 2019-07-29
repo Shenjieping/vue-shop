@@ -176,6 +176,10 @@ export default {
         },
         preview() {
             this.previewFlag = true
+            this.detail.goodsCompany = Object.assign({}, {
+                name: this.$refs.enterpriseTemp.enterprise.name,
+                details: this.$refs.enterpriseTemp.enterprise.details
+            })
         },
         closePreview() {
             this.previewFlag = false
