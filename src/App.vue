@@ -76,6 +76,8 @@ body,
     margin: 20px;
     border: 1px solid $border-color;
     box-shadow: 0 0 15px 5px $border-color;
+    // overflow: hidden;
+    height: 100%;
   }
 }
 </style>

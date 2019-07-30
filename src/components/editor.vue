@@ -1,8 +1,11 @@
 <template>
     <div :class="$options.name">
-        <el-form ref="addForm" :model="formAdd">
+        <el-form
+            ref="addForm"
+            :model="formAdd"
+            class="form-box">
             <el-form-item
-                label="产品名称："
+                label="列表名称"
                 prop="name"
                 :rules="[{required: true, message: '请输入产品名称', trigger: 'blur'}]">
                 <el-input v-model="formAdd.name"></el-input>
@@ -16,15 +19,28 @@
                 v-for="(item, k) in formAdd.domain"
                 :prop="'domain.' + k + '.key'"
                 :key="k"
-                :rules="[{required: true, message: '请输入值', trigger: 'blur'}]">
+                :rules="[
+                    {required: true, message: '请输入名称', trigger: 'blur'}
+                ]">
                 <el-input
                     :prop="'domain.' + k + '.name1'"
                     placeholder="请输入名称"
                     v-model="item.key"></el-input>
-                <el-input
+                <!-- <el-input
                     :prop="'domain.' + k + '.name2'"
                     placeholder="请输入值"
-                    v-model="item.val"></el-input>
+                    v-model="item.val"></el-input> -->
+                <el-form-item
+                    class="val-form-item"
+                    :prop="'domain.' + k + '.val'"
+                    :rules="[
+                        {required: true, message: '请输入值', trigger: 'blur'}
+                    ]">
+                    <el-input
+                        :prop="'domain.' + k + '.name2'"
+                        placeholder="请输入值"
+                        v-model="item.val"></el-input>
+                </el-form-item>
                 <el-button
                     type="primary"
                     @click="deleteInput(k)">删除</el-button>
@@ -225,6 +241,15 @@ export default {
                     color: #409EFF;
                     cursor: pointer;
                 }
+            }
+        }
+    }
+    .form-box {
+        .val-form-item {
+            display: inline-block;
+            width: 35%;
+            .el-input {
+                width: 100%;
             }
         }
     }

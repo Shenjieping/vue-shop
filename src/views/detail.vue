@@ -37,6 +37,7 @@
                             :goods-name="detail.goodsName"
                             :goods-details="detail.goodsDetails"
                             :source-init="detail.sourceOriginInitial"
+                            :id="id"
                             @success-add-resouce="successAdd"></origin>
                     </el-tab-pane>
                 </el-tabs>
@@ -77,9 +78,12 @@ export default {
                 sourceOriginInitial: 0,
                 goodsCompany: {
                     name: '',
-                    details: ''
+                    details: '',
+                    department: '',
+                    payLink: ''
                 }
-            }
+            },
+            id: ''
         }
     },
     components: {
@@ -90,7 +94,8 @@ export default {
     },
     methods: {
         clickItem(item, key) {
-            this.getDetail(item.goodsName)
+            this.getDetail(item.goodsName, item.id)
+            this.id = item.id
             this.active = key
         },
         getUserList() {
@@ -98,16 +103,17 @@ export default {
                 .then(res => {
                     if (res.data.result && res.data.data) {
                         this.goodsList = res.data.data
-                        this.getDetail(this.goodsList[0].goodsName)
+                        this.getDetail(this.goodsList[0].goodsName, this.goodsList[0].id)
+                        this.id = this.goodsList[0].id
                     }
                 })
                 .catch(err => {
                     console.error(err)
                 })
         },
-        getDetail(goodsName) {
+        getDetail(goodsName, id) {
             this.showLoading()
-            this.http.post(`${api.goods}/goods/detailList`, {goodsName})
+            this.http.post(`${api.goods}/goods/detailList`, {goodsName, id})
                 .then(res => {
                     if (res.data && res.data.result) {
                         let {data} = res.data
@@ -120,7 +126,7 @@ export default {
                             source,
                             id: _id,
                             sourceOriginInitial: Number(sourceOriginInitial) || 1000000,
-                            goodsCompany: goodsCompany || {name: '', details: ''}
+                            goodsCompany: goodsCompany || {name: '', details: '', department: '', payLink: ''}
                         })
                     } else {
                         this.$message.error(res.data.msg)
@@ -151,9 +157,12 @@ export default {
         saveDetail(params) {
             if (this.checkTab()) {
                 params = Object.assign({}, params, {
+                    id: this.id,
                     goodsCompany: {
                         name: this.$refs.enterpriseTemp.enterprise.name,
-                        details: this.$refs.enterpriseTemp.enterprise.details
+                        details: this.$refs.enterpriseTemp.enterprise.details,
+                        department: this.$refs.enterpriseTemp.enterprise.department,
+                        payLink: this.$refs.enterpriseTemp.enterprise.payLink
                     }
                 })
                 this.http.post(`${api.goods}/goods/addDetail`, params)
@@ -178,7 +187,9 @@ export default {
             this.previewFlag = true
             this.detail.goodsCompany = Object.assign({}, {
                 name: this.$refs.enterpriseTemp.enterprise.name,
-                details: this.$refs.enterpriseTemp.enterprise.details
+                details: this.$refs.enterpriseTemp.enterprise.details,
+                department: this.$refs.enterpriseTemp.enterprise.department,
+                payLink: this.$refs.enterpriseTemp.enterprise.payLink
             })
         },
         closePreview() {

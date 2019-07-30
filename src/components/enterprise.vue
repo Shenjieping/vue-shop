@@ -18,6 +18,18 @@
                     <el-input v-model="enterprise.details" placeholder="请输入企业描述" v-if="hasEdit"></el-input>
                     <span v-else>{{enterprise.details}}</span>
                 </el-form-item>
+                <el-form-item
+                    label="监管部门"
+                    prop="department">
+                    <el-input v-model="enterprise.department" placeholder="请输入监管部门" v-if="hasEdit"></el-input>
+                    <span v-else>{{enterprise.department}}</span>
+                </el-form-item>
+                <el-form-item
+                    label="购买链接"
+                    prop="payLink">
+                    <el-input v-model="enterprise.payLink" placeholder="请输入购买链接" v-if="hasEdit"></el-input>
+                    <span v-else>{{enterprise.payLink}}</span>
+                </el-form-item>
                 <el-form-item>
                     <el-button
                         type="primary"
@@ -37,15 +49,23 @@ export default {
             showAdd: false,
             enterprise: {
                 name: '',
-                details: ''
+                details: '',
+                department: ''
             },
             rules: {
                 name: [
                     { required: true, message: '请输入企业名称', trigger: 'blur' },
-                    { max: 30, message: '请输入小于30字的名称', trigger: 'blur' }
+                    { max: 30, message: '请输入小于30字', trigger: 'blur' }
                 ],
                 details: [
-                    { max: 30, message: '请输入小于30字的描述', trigger: 'blur' }
+                    { max: 30, message: '请输入小于30字', trigger: 'blur' }
+                ],
+                department: [
+                    { required: true, message: '请输入监管部门', trigger: 'blur' },
+                    { max: 30, message: '请输入小于30字', trigger: 'blur' }
+                ],
+                payLink: [
+                    { type: 'url', message: '请输入正确的链接', trigger: 'blur' }
                 ]
             }
         }
@@ -56,7 +76,9 @@ export default {
             default() {
                 return {
                     name: '',
-                    details: ''
+                    details: '',
+                    department: '',
+                    payLink: ''
                 }
             }
         },
@@ -85,7 +107,7 @@ export default {
                 if (valid) {
                     this.$emit('next', true)
                 } else {
-                    this.$message.error('请填写企业名称')
+                    this.$message.error('请填写企业名称和监管部门')
                     return false
                 }
             })

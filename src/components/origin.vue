@@ -109,6 +109,10 @@ export default {
             type: String,
             default: ''
         },
+        id: {
+            type: String | Number,
+            default: ''
+        },
         sourceInit: {
             type: Number,
             default: 1000000
@@ -142,7 +146,9 @@ export default {
                         this.$message.error('请输入小于10000的数据')
                         return false
                     }
+                    console.log('....', this.id)
                     let paramsSource = {
+                        id: this.id,
                         goodsName: this.goodsName,
                         sourceOriginNum: this.codeFrom.count,
                         sourceOriginBegin: this.originBegin,

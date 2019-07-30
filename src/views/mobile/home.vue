@@ -40,9 +40,13 @@
         </div>
         <div class="foot-btn">
             <div class="more" @click="showMore" v-if="!showMoreFlag">更多溯源信息</div>
-            <div class="play" :class="{'hide-more': showMoreFlag}">立即购买</div>
+            <div
+                class="play"
+                :class="{'hide-more': showMoreFlag}">
+                <a :href="detailObj.goodsCompany.payLink">立即购买</a>
+            </div>
         </div>
-        <div class="foot-title">上海市松江区农民专业合作联社产品安全监督办公室</div>
+        <div class="foot-title">{{detailObj.goodsCompany.department}}</div>
     </div>
 </template>
 
@@ -67,7 +71,9 @@ export default {
                 productCode: '',
                 goodsCompany: {
                     name: '',
-                    details: ''
+                    details: '',
+                    payLink: '',
+                    department: ''
                 }
             },
             showMoreFlag: false
@@ -84,10 +90,11 @@ export default {
                 return k === 0
             }
         },
-        getDetail(goodsName, num) {
+        getDetail(goodsName, num, id) {
             this.http.post(`${api.goods}/goods/detailpadList`, {
                 goodsName,
-                num
+                num,
+                id
             })
                 .then(res => {
                     if (res.data && res.data.result) {
@@ -114,12 +121,13 @@ export default {
     created() {
         let {
             goodsName,
-            num
+            num,
+            id
         } = this.$route.query
-        if (!goodsName || !num) {
+        if (!goodsName || !num || !id) {
             this.$message.error('商品名称错误')
         } else {
-            this.getDetail(goodsName, num)
+            this.getDetail(goodsName, num, id)
         }
     }
 }
@@ -239,6 +247,11 @@ $THEME: #014d27;
             line-height: 44px;
             text-align: center;
             font-size: 18px;
+            a {
+                text-decoration: none;
+                color: #000;
+                display: block;
+            }
         }
         .more {
             background-color: $THEME;
