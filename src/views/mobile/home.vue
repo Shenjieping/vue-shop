@@ -90,9 +90,8 @@ export default {
                 return k === 0
             }
         },
-        getDetail(goodsName, num, id) {
+        getDetail(num, id) {
             this.http.post(`${api.goods}/goods/detailpadList`, {
-                goodsName,
                 num,
                 id
             })
@@ -113,21 +112,20 @@ export default {
                     }
                 })
                 .catch(err => {
-                    this.$message.error(err)
+                    this.$message.error('请求出错')
                     console.error(err)
                 })
         }
     },
     created() {
         let {
-            goodsName,
             num,
             id
         } = this.$route.query
-        if (!goodsName || !num || !id) {
+        if (!num || !id) {
             this.$message.error('商品名称错误')
         } else {
-            this.getDetail(goodsName, num, id)
+            this.getDetail(num, id)
         }
     }
 }

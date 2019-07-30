@@ -108,6 +108,7 @@ export default {
                     }
                 })
                 .catch(err => {
+                    this.$message.error('请求出错')
                     console.error(err)
                 })
         },
@@ -134,6 +135,7 @@ export default {
                     this.hideLoading()
                 })
                 .catch(err => {
+                    this.$message.error('请求出错')
                     console.error(err)
                     this.hideLoading()
                 })
@@ -178,7 +180,7 @@ export default {
                         }
                     })
                     .catch(err => {
-                        this.$message.error(err)
+                        this.$message.error('请求出错')
                         console.error(err)
                     })
             }

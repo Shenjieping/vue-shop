@@ -146,10 +146,9 @@ export default {
                         this.$message.error('请输入小于10000的数据')
                         return false
                     }
-                    console.log('....', this.id)
                     let paramsSource = {
                         id: this.id,
-                        goodsName: this.goodsName,
+                        // goodsName: this.goodsName,
                         sourceOriginNum: this.codeFrom.count,
                         sourceOriginBegin: this.originBegin,
                         sourceOriginCreateDate: new Date().getTime()
@@ -197,17 +196,18 @@ export default {
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)'
             })
-            var _this = this
+            const _this = this
             this.downloadLoading = true
             import('@/vendor/Export2Excel.js').then(excel => {
-                const tHeader = ['编号', '商品名称', '溯源码']
-                const filterVal = ['index', 'goodsName', 'sourceCode']
+                const tHeader = ['编号', '商品名称', '溯源码', '链接']
+                const filterVal = ['index', 'goodsName', 'sourceCode', 'url']
 
                 const list = (sourceOriginAmount || []).map((item, key) => {
                     return {
                         index: key + 1,
                         goodsName: _this.goodsName,
-                        sourceCode: item.key
+                        sourceCode: item.key,
+                        url: `${location.host}/#/mobileHome?id=${this.id}&num=${item.key}`
                     }
                 })
 
