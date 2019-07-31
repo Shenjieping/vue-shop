@@ -119,7 +119,7 @@ export default {
                     if (res.data && res.data.result) {
                         let {data} = res.data
                         let dataObj = data[0]
-                        let {createDate, goodsDetails, goodsName, source, _id, sourceOriginInitial, goodsCompany} = dataObj
+                        let {createDate, goodsDetails, goodsName, source, _id, sourceOriginInitial, goodsCompany} = dataObj || {}
                         this.detail = Object.assign({}, this.detail, {
                             createDate,
                             goodsDetails,
@@ -171,7 +171,7 @@ export default {
                     .then(res => {
                         if (res.data && res.data.result) {
                             this.$message.success('保存成功')
-                            this.getDetail({goodsName: this.detail.goodsName, id: this.id})
+                            this.getDetail(this.detail.goodsName, this.id)
                             this.http.post(`${api.goods}/record/add`, {
                                 type: `${this.detail.goodsName} 添加商品信息`
                             })
