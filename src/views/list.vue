@@ -48,6 +48,7 @@
         </div>
         <el-dialog title="添加商品"
             :visible.sync="addModal"
+            :close-on-click-modal="false"
             v-if="addModal"
             width="35%">
             <el-form :model="user"
