@@ -92,13 +92,10 @@ $THEME: #014d27;
             padding: 0;
             margin: 0;
             li {
-                height: 32px;
                 line-height: 32px;
                 padding: 0 10px;
                 border-bottom: 1px solid #eee;
                 span {
-                    display: inline-block;
-                    vertical-align: middle;
                     line-height: 32px;
                     font-size: 14px;
                     &.title {

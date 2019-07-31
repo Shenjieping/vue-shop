@@ -159,7 +159,7 @@ export default {
                             .then(res => {
                                 if (res.data && res.data.result) {
                                     this.$message.success('添加成功')
-                                    this.$emit('success-add-resouce', {goodsName: this.goodsName})
+                                    this.$emit('success-add-resouce', {goodsName: this.goodsName, id: this.id})
                                     this.http.post(`${api.goods}/record/add`, {
                                         type: `${this.goodsName} 添加溯源码`
                                     })

@@ -18,7 +18,8 @@
                     <el-button type="primary"
                         plain
                         style="width: 100%;"
-                        @click="login">登录</el-button>
+                        :loading="isLoading"
+                        @click="login">{{isLoading ? '登录中' : '登录'}}</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -40,13 +41,15 @@ export default {
             rules: {
                 name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
                 pwd: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-            }
+            },
+            isLoading: false
         }
     },
     methods: {
         login() {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
+                    this.isLoading = true
                     this.http.post(`${api.goods}/user/login`, {
                         name: this.user.name,
                         pwd: this.user.pwd
@@ -60,8 +63,10 @@ export default {
                         } else {
                             this.$message.error(res.data.msg)
                         }
+                        this.isLoading = false
                     }).catch(error => {
-                        this.$message.error('登录失败')
+                        this.$message.error('请求出错')
+                        this.isLoading = false
                         console.error(error)
                     })
                 }

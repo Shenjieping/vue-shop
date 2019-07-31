@@ -140,8 +140,8 @@ export default {
                     this.hideLoading()
                 })
         },
-        successAdd({goodsName}) {
-            this.getDetail(goodsName)
+        successAdd({goodsName, id}) {
+            this.getDetail(goodsName, id)
         },
         nextTab(type) {
             if (type) {
@@ -171,9 +171,9 @@ export default {
                     .then(res => {
                         if (res.data && res.data.result) {
                             this.$message.success('保存成功')
-                            this.$emit('success-add-detail', {goodsName: this.goodsName})
+                            this.getDetail({goodsName: this.detail.goodsName, id: this.id})
                             this.http.post(`${api.goods}/record/add`, {
-                                type: `${this.goodsName} 添加商品信息`
+                                type: `${this.detail.goodsName} 添加商品信息`
                             })
                         } else {
                             this.$message.error(res.data.msg)
