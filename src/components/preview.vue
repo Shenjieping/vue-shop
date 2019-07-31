@@ -94,7 +94,7 @@ $THEME: #014d27;
             li {
                 line-height: 32px;
                 padding: 0 10px;
-                border-bottom: 1px solid #eee;
+                border-bottom: 1px solid #ddd;
                 span {
                     line-height: 32px;
                     font-size: 14px;
@@ -105,7 +105,7 @@ $THEME: #014d27;
                         text-align-last: justify;
                     }
                     &.content {
-                        color: #999;
+                        color: #666;
                     }
                 }
             }

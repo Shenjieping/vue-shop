@@ -138,8 +138,10 @@ $THEME: #014d27;
     min-height: 100%;
     box-sizing: border-box;
     padding-bottom: 30px;
-    max-width: 750px;
+    max-width: 800px;
     margin: 0 auto;
+    padding: 4px 10px;
+    box-sizing: border-box;
     .header {
         height: 200px;
         background-color: $THEME;
@@ -207,7 +209,7 @@ $THEME: #014d27;
             li {
                 line-height: 32px;
                 padding: 0 10px;
-                border-bottom: 1px solid #eee;
+                border-bottom: 1px solid #ddd;
                 span {
                     line-height: 32px;
                     font-size: 14px;
@@ -218,7 +220,7 @@ $THEME: #014d27;
                         text-align-last: justify;
                     }
                     &.content {
-                        color: #999;
+                        color: #666;
                     }
                 }
             }

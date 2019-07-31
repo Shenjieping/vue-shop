@@ -103,11 +103,12 @@ export default {
             this.showAdd = false
         },
         next(formName) {
-            this.$refs[formName].validate((valid) => {
+            this.$refs[formName].validate((valid, value) => {
                 if (valid) {
                     this.$emit('next', true)
                 } else {
-                    this.$message.error('请填写企业名称和监管部门')
+                    var keys = Object.keys(value)[0] || []
+                    this.$message.error(value[keys][0].message || '请输入合法的信息')
                     return false
                 }
             })
