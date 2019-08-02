@@ -207,7 +207,7 @@ export default {
                         index: key + 1,
                         goodsName: _this.goodsName,
                         sourceCode: item.key,
-                        url: `${location.host}/#/mobileHome?id=${this.id}&num=${item.key}`
+                        url: `${location.host}/mobileHome?id=${this.id}&num=${item.key}`
                     }
                 })
 
