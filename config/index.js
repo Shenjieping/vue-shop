@@ -13,7 +13,8 @@ module.exports = {
     proxyTable: {
       '/': {
         // target: 'http://172.19.203.223:3002/',
-        target: 'http://book.euxa.club:3002',
+        // target: 'http://book.euxa.club:3002',
+        target: 'http://terrace.xiahaoyue688.com:3002',
         changeOrigin: true,
         pathRewrite: {
         }

@@ -270,9 +270,6 @@ $THEME: #014d27;
         }
     }
     .foot-title {
-        position: absolute;
-        bottom: 10px;
-        left: 0;
         font-size: 12px;
         width: 100%;
         text-align: center;
