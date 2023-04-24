@@ -24,7 +24,7 @@
     "store2": "^2.6.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
-    "xlsx": "^0.14.4"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
